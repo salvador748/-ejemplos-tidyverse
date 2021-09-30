@@ -7,6 +7,74 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# Ejemplos de Tidyverse
+# Preparativos
 
+## Carga de paquetes
+
+```{r carga-librerias}
+# dplyr
+library(dplyr)
+
+# ggplot2
+library(ggplot2)
+```
+
+
+## Carga de datos
+
+```{r carga-datos}
+# Ríos
+rios <-
+  read.csv(file = 'https://raw.githubusercontent.com/tpb728O-programaciongeoespacialr/2021ii/main/datos/hidrologia/fdc/fdc.csv')
+
+# Covid
+covid <- 
+  read.csv(
+    file='https://raw.githubusercontent.com/tpb728O-programaciongeoespacialr/2021ii/main/datos/minsalud/covid/ultimafecha_CSV_GENERAL.csv', 
+    sep = ","
+  )
+```
+
+## dplyr
+
+### mutate()
+
+```{r estructura}
+# Estructura del data frame
+str(rios)
+```
+
+```{r despliegue}
+# Despliegue de los primeros observaciones
+slice_head(rios, n = 10)
+
+# Despliegue de los últimos observaciones
+slice_tail(rios, n = 10)
+
+# Despliegue de una muestra aleatoria de observaciones
+slice_sample(rios, n = 10)
+```
+
+```{r funciones-enlazadas}
+# Funciones enlazadas
+rios %>% slice_head(n = 10) %>% slice_tail(n = 2)
+```
+
+```{r funciones-anidadas}
+# Funciones anidadas
+slice_tail(slice_head(rios, n = 10), n = 2)
+```
+
+```{r ejemplos-mutate}
+# Cambio de nombre de las columnas mediante rename()
+rios <-
+  rios %>%
+  rename(fecha = Tiempo,
+         pandora = Pandora.mm..637km2.,
+         banano = Banano.mm..90km2.) %>%
+  mutate(fecha = as.Date(fecha, format = "%m/%d/%Y"),
+         promedio = (pandora + banano) / 2)
+
+slice_head(rios, n = 10)
+```
 
