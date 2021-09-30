@@ -78,6 +78,28 @@ rios <-
 slice_head(rios, n = 10)
 ```
 
+```{r rios-histogramas}
+# Histograma simple
+rios %>%
+  ggplot(aes(x = pandora)) +
+  geom_histogram()
+
+# Histograma con opciones
+rios %>%
+  ggplot(aes(x = pandora)) +
+  geom_histogram(binwidth = 1,
+                 color = "black",
+                 fill = "white")
+```
+
+```{r rios-lineas}
+# Gráfico de líneas simple
+rios %>%
+  ggplot(aes(x = fecha, y = pandora)) +
+  geom_line()
+```
+
+
 ### select()
 
 ```{r ejemplos_select}
