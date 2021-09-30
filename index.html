@@ -173,16 +173,9 @@ pre code {
 <div id="carga-de-paquetes" class="section level2">
 <h2>Carga de paquetes</h2>
 <pre class="r"><code># dplyr
-library(dplyr)</code></pre>
-<pre><code>## 
-## Attaching package: &#39;dplyr&#39;</code></pre>
-<pre><code>## The following objects are masked from &#39;package:stats&#39;:
-## 
-##     filter, lag</code></pre>
-<pre><code>## The following objects are masked from &#39;package:base&#39;:
-## 
-##     intersect, setdiff, setequal, union</code></pre>
-<pre class="r"><code># ggplot2
+library(dplyr)
+
+# ggplot2
 library(ggplot2)</code></pre>
 </div>
 <div id="carga-de-datos" class="section level2">
@@ -236,17 +229,17 @@ slice_tail(rios, n = 10)</code></pre>
 ## 10 12/31/1983                1.93             13.82</code></pre>
 <pre class="r"><code># Despliegue de una muestra aleatoria de observaciones
 slice_sample(rios, n = 10)</code></pre>
-<pre><code>##        Tiempo Pandora.mm..637km2. Banano.mm..90km2.
-## 1   1/11/1979                5.68              3.99
-## 2   9/21/1976                6.31              9.15
-## 3   9/22/1974                3.15              9.98
-## 4   1/19/1979                3.65              5.00
-## 5  12/13/1982                2.22             11.81
-## 6    1/3/1983                5.59             10.94
-## 7    8/3/1981                5.10              5.82
-## 8   4/18/1975                1.11              4.05
-## 9   12/6/1973                3.99             12.48
-## 10  6/24/1974                4.15             12.58</code></pre>
+<pre><code>##       Tiempo Pandora.mm..637km2. Banano.mm..90km2.
+## 1   5/7/1981                5.26              8.69
+## 2  1/29/1980                4.26             11.71
+## 3   2/4/1974                2.71              6.54
+## 4  6/27/1983                6.62             10.37
+## 5   3/5/1978                6.24             11.23
+## 6  8/19/1977                1.90             12.10
+## 7  1/27/1983                5.09              6.57
+## 8   9/3/1977                1.16              7.17
+## 9   2/8/1976                0.18              6.02
+## 10 2/13/1982                2.16             10.18</code></pre>
 <pre class="r"><code># Funciones enlazadas
 rios %&gt;% slice_head(n = 10) %&gt;% slice_tail(n = 2)</code></pre>
 <pre><code>##      Tiempo Pandora.mm..637km2. Banano.mm..90km2.
@@ -278,6 +271,82 @@ slice_head(rios, n = 10)</code></pre>
 ## 8  1973-06-29    3.84  13.54    8.690
 ## 9  1973-06-30    3.21  11.42    7.315
 ## 10 1973-07-01    2.77  10.18    6.475</code></pre>
+</div>
+<div id="select" class="section level3">
+<h3>select()</h3>
+<pre class="r"><code>covid_columnas_seleccionadas &lt;-
+  covid %&gt;%
+  select(FECHA, muj_posi, hom_posi) %&gt;%
+  rename(
+    fecha = FECHA,
+    positivos_mujeres = muj_posi,
+    positivos_hombres = hom_posi
+  ) %&gt;%
+  mutate(fecha = as.Date(fecha, format = &quot;%d/%m/%Y&quot;))
+
+slice_head(covid_columnas_seleccionadas, n = 10)</code></pre>
+<pre><code>##         fecha positivos_mujeres positivos_hombres
+## 1  2020-03-06                NA                NA
+## 2  2020-03-07                NA                NA
+## 3  2020-03-08                NA                NA
+## 4  2020-03-09                NA                NA
+## 5  2020-03-10                 7                 6
+## 6  2020-03-11                14                 8
+## 7  2020-03-12                14                 9
+## 8  2020-03-13                14                12
+## 9  2020-03-14                15                12
+## 10 2020-03-15                19                16</code></pre>
+</div>
+<div id="filter" class="section level3">
+<h3>filter()</h3>
+<pre class="r"><code>covid_filtrado &lt;-
+  covid %&gt;%
+  select(FECHA, nue_posi) %&gt;%
+  rename(fecha = FECHA, positivos_nuevos = nue_posi) %&gt;%
+  mutate(fecha = as.Date(fecha, format = &quot;%d/%m/%Y&quot;)) %&gt;%
+  filter(positivos_nuevos &gt;= 3000)
+
+slice_head(covid_filtrado, n = 20)</code></pre>
+<pre><code>##        fecha positivos_nuevos
+## 1 2021-05-12             3173
+## 2 2021-05-13             3039</code></pre>
+</div>
+<div id="arrange" class="section level3">
+<h3>arrange()</h3>
+<pre class="r"><code>covid_filtrado &lt;-
+  covid %&gt;%
+  select(FECHA, nue_posi) %&gt;%
+  rename(fecha = FECHA, positivos_nuevos = nue_posi) %&gt;%
+  mutate(fecha = as.Date(fecha, format = &quot;%d/%m/%Y&quot;)) %&gt;%
+  filter(positivos_nuevos &gt;= 2500) %&gt;%
+  arrange(desc(positivos_nuevos))
+
+slice_head(covid_filtrado, n = 30)</code></pre>
+<pre><code>##         fecha positivos_nuevos
+## 1  2021-05-12             3173
+## 2  2021-05-13             3039
+## 3  2021-09-02             2991
+## 4  2021-09-09             2975
+## 5  2021-09-07             2956
+## 6  2021-05-19             2900
+## 7  2021-09-08             2884
+## 8  2021-09-01             2848
+## 9  2021-09-10             2825
+## 10 2021-05-14             2815
+## 11 2021-05-20             2812
+## 12 2021-05-15             2795
+## 13 2021-08-27             2787
+## 14 2021-04-29             2781
+## 15 2021-09-03             2750
+## 16 2021-08-26             2706
+## 17 2021-08-25             2619
+## 18 2021-04-30             2609
+## 19 2021-05-21             2587
+## 20 2021-05-26             2587
+## 21 2021-08-31             2581
+## 22 2021-05-06             2559
+## 23 2021-05-05             2555
+## 24 2021-09-11             2546</code></pre>
 </div>
 </div>
 </div>
